@@ -1,4 +1,5 @@
 import type { NextFunction, Response } from "express";
+import { isValidObjectId } from "mongoose";
 import type { AuthRequest } from "../middleware/auth";
 import { Chat } from "../model/Chat";
 import { Message } from "../model/Message";
@@ -12,10 +13,20 @@ export async function getMessages(
   try {
     const { chatId } = req.params;
     const userId = req.userId;
+
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    if (!isValidObjectId(chatId)) {
+      return res.status(400).json({ message: "Invalid chatId" });
+    }
+
     const chat = await Chat.findOne({
       _id: chatId,
       participants: userId,
     });
+
     if (!chat) {
       return res.status(404).json({ message: "Chat not found" });
     }
