@@ -6,7 +6,7 @@ export type AuthRequest = Request & {
   userId?: string;
 };
 
-export const protectRoute = () => {
+export const protectRoute = async () => {
   requireAuth;
   async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
@@ -24,7 +24,8 @@ export const protectRoute = () => {
       next();
     } catch (error) {
       console.error("Error in protectedRoute middleware:", error);
-      res.status(500).json({ message: "Internal server error." });
+      res.status(500);
+      next(error);
     }
   };
 };
