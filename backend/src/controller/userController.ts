@@ -8,6 +8,7 @@ export async function getUsers(
   res: Response,
   next: NextFunction,
 ) {
+  console.log("USER Route hit");
   try {
     const userId = req.userId;
     const users = await User.find({ _id: { $ne: userId } })
